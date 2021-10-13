@@ -5,9 +5,6 @@
 
 #include "zmake_window.h"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
-
 #include <iostream>
 
 
