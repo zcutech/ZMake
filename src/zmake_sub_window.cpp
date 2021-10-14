@@ -2,6 +2,8 @@
 // Created by Charlie Zhong on 2021/10/8.
 //
 
+#include "zmake_sub_window.h"
+
 #include <node_scene.h>
 #include <node_wire.h>
 #include <node_graphics_scene.h>
@@ -10,7 +12,6 @@
 #include <node_graphics_wire.h>
 #include <node_scene_history.h>
 
-#include "zmake_sub_window.h"
 #include "zmake_conf.h"
 
 

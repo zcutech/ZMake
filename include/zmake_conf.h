@@ -5,6 +5,8 @@
 #ifndef ZMAKE_ZMAKE_CONF_H
 #define ZMAKE_ZMAKE_CONF_H
 
+#include <map>
+#include <exception>
 
 #include <node_node.h>
 #include <node_content_widget.h>
@@ -12,9 +14,6 @@
 
 #include "zmake_definitions.h"
 #include "zmake_node_base.h"
-
-#include <map>
-#include <exception>
 
 
 ZNodeClassProxy getClassProxyByOpCode(Z_NODE_TYPE opCode);

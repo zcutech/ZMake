@@ -5,13 +5,14 @@
 #ifndef ZMAKE_ZMAKE_NODE_BASE_H
 #define ZMAKE_ZMAKE_NODE_BASE_H
 
+#include <iostream>
+
 #include <node_node.h>
 #include <node_graphics_node.h>
 #include <node_content_widget.h>
 
 #include "zmake_definitions.h"
 
-#include <iostream>
 
 class ZMakeNode;
 

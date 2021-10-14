@@ -6,10 +6,11 @@
 #define ZMAKE_ZMAKE_DRAG_LISTBOX_H
 
 #include <QtCore>
-#include <QtWidgets>
 #include <QtGui>
+#include <QtWidgets>
 
 #include "zmake_conf.h"
+
 
 class QDMDragListBox : public QListWidget
 {

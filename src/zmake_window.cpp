@@ -2,13 +2,13 @@
 // Created by Charlie Zhong on 2021/10/8.
 //
 
+#include "zmake_window.h"
+
 #include <QtWidgets>
 
 #include <node_scene.h>
 #include <node_scene_history.h>
 #include <utils.h>
-
-#include "zmake_window.h"
 
 #include "zmake_sub_window.h"
 #include "zmake_drag_listbox.h"

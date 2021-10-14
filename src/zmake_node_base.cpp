@@ -4,6 +4,7 @@
 
 #include "zmake_node_base.h"
 
+
 ZNodeClassProxyMap* BaseFactory::ZNODES_PROXIES = new ZNodeClassProxyMap();
 
 

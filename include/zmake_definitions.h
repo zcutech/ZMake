@@ -5,6 +5,10 @@
 #ifndef ZMAKE_ZMAKE_DEFINITIONS_H
 #define ZMAKE_ZMAKE_DEFINITIONS_H
 
+#include <map>
+#include <QString>
+
+
 enum Z_MIME_TYPE {
     LISTBOX_MIMETYPE,
 };
