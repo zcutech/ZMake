@@ -7,11 +7,13 @@
 ZNodeClassProxyMap* BaseFactory::ZNODES_PROXIES = new ZNodeClassProxyMap();
 
 
-// -------------------------------- class ZMakeGraphicsNode --------------------------------
+/* -------------------------------- class ZMakeGraphicsNode -------------------------------- */
 
 // must call init method firstly after construction
 ZMakeGraphicsNode::ZMakeGraphicsNode(Node *node, QGraphicsItem *parent) :
-    QDMGraphicsNode(node, parent)
+    icons(Q_NULLPTR),
+    QDMGraphicsNode(node, parent),
+    node(dynamic_cast<ZMakeNode*>(node))
 {
 }
 
@@ -26,8 +28,34 @@ void ZMakeGraphicsNode::initSize()
     this->titleVertPad = 10.0;
 }
 
+void ZMakeGraphicsNode::initAssets()
+{
+    QDMGraphicsNode::initAssets();
+    // ToDo: use Qt Resource System
+    auto pStatus = QDir(QFileInfo(__FILE__).absoluteDir())
+            .absoluteFilePath("../assets/icons/status_icons.png");
+    this->icons = new QImage(pStatus);
+}
 
-// -------------------------------- class ZMakeNodeContent --------------------------------
+void ZMakeGraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                              QWidget *widget)
+{
+    QDMGraphicsNode::paint(painter, option, widget);
+
+    auto offset = 24.0;
+    if (this->node->isDirty())
+        offset = 0.0;
+    if (this->node->isInvalid())
+        offset = 48.0;
+
+    painter->drawImage(
+            QRectF(-10, -10, 24.0, 24.0),
+            *(this->icons),
+            QRectF(offset, 0, 24.0, 24.0)
+        );
+}
+
+/* -------------------------------- class ZMakeNodeContent -------------------------------- */
 
 // must call init method firstly after construction
 ZMakeNodeContent::ZMakeNodeContent(Node *node, QWidget *parent) :
@@ -45,7 +73,7 @@ ZMakeNodeContent* ZMakeNodeContent::init()
 }
 
 
-// ------------------------------------ class ZMakeNode ------------------------------------
+/* ------------------------------------ class ZMakeNode ------------------------------------ */
 
 // must call init method firstly after construction
 ZMakeNode::ZMakeNode(Scene *_scene, const std::string& _title,

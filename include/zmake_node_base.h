@@ -13,18 +13,24 @@
 
 #include <iostream>
 
-// -------------------------------- class ZMakeGraphicsNode --------------------------------
+class ZMakeNode;
+
+/* -------------------------------- class ZMakeGraphicsNode -------------------------------- */
 class ZMakeGraphicsNode : public QDMGraphicsNode
 {
 public:
     // must call init method firstly after construction
     explicit ZMakeGraphicsNode(Node *node, QGraphicsItem *parent = Q_NULLPTR);
     ~ZMakeGraphicsNode() override = default;
-//    void init() override;
     void initSize() override;
+    void initAssets() override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    ZMakeNode* node;
+private:
+    QImage* icons;
 };
 
-// -------------------------------- class ZMakeNodeContent --------------------------------
+/* -------------------------------- class ZMakeNodeContent -------------------------------- */
 class ZMakeNodeContent : public QDMNodeContentWidget
 {
 public:
@@ -34,7 +40,7 @@ public:
     ZMakeNodeContent* init() override;
 };
 
-// ------------------------------------ class ZMakeNode ------------------------------------
+/* ------------------------------------ class ZMakeNode ------------------------------------ */
 class ZMakeNode : public Node
 {
 public:
@@ -65,7 +71,7 @@ protected:
 };
 
 
-// ----- Factory and template class for register node type in map automatically -----
+/* -------- Factory and template class for register node type in map automatically -------- */
 
 typedef ZMakeNode* (*ZNodeClassProxy)(Scene* s);
 // a map for node type num to its class proxy function pointer
