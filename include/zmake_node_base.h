@@ -25,6 +25,7 @@ public:
     ~ZMakeGraphicsNode() override = default;
     void initSize() override;
     void initAssets() override;
+    void initContent() override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     ZMakeNode* node;
 private:

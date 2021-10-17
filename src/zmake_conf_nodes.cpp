@@ -59,6 +59,66 @@ ZMakeNodeDiv::ZMakeNodeDiv(Scene *_scene):
 SubNodeRegister<ZMakeNodeDiv> ZMakeNodeDiv::divReg(OP_NODE_DIV);
 
 
+/* ++++++++++++++++++++++++++++++ class ZMakeNodeVariables ++++++++++++++++++++++++++++++ */
+ZNodeVariables::ZNodeVariables(Scene *_scene):
+    ZMakeNode(_scene, "Variables", {}, {})
+{
+    auto pInput = QDir(QFileInfo(__FILE__).absoluteDir()).absoluteFilePath("../assets/icons/in.png");
+    this->icon(pInput);
+    this->opCode(OP_NODE_INPUT);
+    this->opTitle("Variables");
+    this->contentLabel_ObjName("zmake_node_variables");
+}
+SubNodeRegister<ZNodeVariables> ZNodeVariables::varsReg(OP_NODE_INPUT);
+
+void ZNodeVariables::initInnerClasses()
+{
+    this->content = (new ZNodeVariablesContent(this))->init();
+    this->grNode = (new ZMakeGraphicsNode(this))->init();
+}
+
+ZNodeVariablesContent::ZNodeVariablesContent(ZNodeVariables* node, QWidget* parent):
+        varsList(Q_NULLPTR),
+        QDMNodeContentWidget(node, parent),
+        node(dynamic_cast<ZNodeVariables*>(node))
+{
+}
+
+ZNodeVariablesContent* ZNodeVariablesContent::init()
+{
+    this->varsList = new QTableWidget(this);
+    this->varsList->setObjectName(this->node->contentLabel_ObjName());
+    this->varsList->setColumnCount(3);
+    this->varsList->setRowCount(10);
+    auto tblHeaders = new QStringList();
+    *tblHeaders << "Name" << "Value" << "Description";
+    this->varsList->setHorizontalHeaderLabels(*tblHeaders);
+    this->varsList->setItem(0, 0, new QTableWidgetItem("CXX"));
+    this->varsList->show();
+
+    return this;
+}
+
+json ZNodeVariablesContent::serialize()
+{
+    auto resSerial = QDMNodeContentWidget::serialize();
+//    resSerial["value"] = this->varsList->text().toStdString();
+
+    return resSerial;
+}
+
+bool ZNodeVariablesContent::deserialize(json data, node_HashMap *hashMap, bool restoreId)
+{
+    auto deserializeOk = QDMNodeContentWidget::deserialize(data, hashMap, restoreId);
+
+    auto value = data["value"];
+//    this->varsList->setText(QString::fromStdString(value));
+
+    return deserializeOk;
+}
+/* ------------------------------ class ZNodeVariables ------------------------------ */
+
+
 /* ++++++++++++++++++++++++++++++ class ZMakeNodeInput ++++++++++++++++++++++++++++++ */
 ZMakeNodeInputContent::ZMakeNodeInputContent(ZMakeNodeInput* node, QWidget* parent):
     edit(Q_NULLPTR),

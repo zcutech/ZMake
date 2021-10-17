@@ -291,6 +291,36 @@ void ZMakeWindow::createNodesDock()
     this->nodesDock->setFloating(false);
 
     this->addDockWidget(Qt::RightDockWidgetArea, this->nodesDock);
+
+
+    auto model = new QFileSystemModel();
+    model->setRootPath(R"(E:\work_home\C++Project\Qt_proj\NodeTiler)");
+//    model->setRootPath(".");
+    model->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
+
+    auto tree = new QTreeView();
+    tree->setModel(model);
+    tree->setRootIndex(model->index(R"(E:\work_home\C++Project\Qt_proj\NodeTiler)"));
+    for (int i = 1; i < model->columnCount(); ++i)
+        tree->hideColumn(i);
+
+    tree->setAnimated(false);
+    tree->setIndentation(20);
+    tree->setSortingEnabled(true);
+//    const QSize availableSize = QApplication::desktop()->availableGeometry(&tree).size();
+//    tree.resize(availableSize / 2);
+    tree->setColumnWidth(0, tree->width() / 3);
+    tree->setWindowTitle(QObject::tr("Dir View"));
+    tree->show();
+
+    auto dirsTreeDock = new QDockWidget("dirsTree");
+    dirsTreeDock->setWidget(tree);
+    dirsTreeDock->setFloating(false);
+
+
+    this->addDockWidget(Qt::LeftDockWidgetArea, dirsTreeDock);
+
+
 }
 
 void ZMakeWindow::createStatusbar()

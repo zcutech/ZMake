@@ -46,6 +46,32 @@ private:
 };
 
 
+/* ++++++++++++++++++++++++++++++ class ZNodeVariables ++++++++++++++++++++++++++++++ */
+class ZNodeVariables : public ZMakeNode
+{
+public:
+    explicit ZNodeVariables(Scene *_scene);
+    ~ZNodeVariables() = default;
+    void initInnerClasses() override;
+private:
+    static SubNodeRegister<ZNodeVariables> varsReg;
+};
+
+class ZNodeVariablesContent : public QDMNodeContentWidget
+{
+public:
+    // must call init method firstly after construct
+    explicit ZNodeVariablesContent(ZNodeVariables* node, QWidget* parent=Q_NULLPTR);
+    ZNodeVariablesContent* init() override;
+    json serialize() override;
+    bool deserialize(json data, node_HashMap *hashMap, bool restoreId) override;
+protected:
+    ZNodeVariables* node;
+    QTableWidget* varsList;
+};
+/* ------------------------------ class ZNodeVariables ------------------------------ */
+
+
 /* ++++++++++++++++++++++++++++++ class ZMakeNodeInput ++++++++++++++++++++++++++++++ */
 class ZMakeNodeInput;
 class ZMakeNodeInputContent : public QDMNodeContentWidget

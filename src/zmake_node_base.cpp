@@ -4,6 +4,8 @@
 
 #include "zmake_node_base.h"
 
+#include <QtWidgets>
+
 
 ZNodeClassProxyMap* BaseFactory::ZNODES_PROXIES = new ZNodeClassProxyMap();
 
@@ -20,14 +22,17 @@ ZMakeGraphicsNode::ZMakeGraphicsNode(Node *node, QGraphicsItem *parent) :
 
 void ZMakeGraphicsNode::initSize()
 {
-    this->width = 160;
-    this->height = 74;
+//    this->width = 160;
+//    this->height = 74;
+    this->width = 300;
+    this->height = 250;
     this->edgeRoundness = 6;
     this->edgePadding = 0;
     this->titleHeight = 22;
     this->titleHoriPad = 8.0;
     this->titleVertPad = 10.0;
 }
+
 
 void ZMakeGraphicsNode::initAssets()
 {
@@ -36,6 +41,25 @@ void ZMakeGraphicsNode::initAssets()
     auto pStatus = QDir(QFileInfo(__FILE__).absoluteDir())
             .absoluteFilePath("../assets/icons/status_icons.png");
     this->icons = new QImage(pStatus);
+}
+
+void ZMakeGraphicsNode::initContent()
+{
+    std::cout << "ZMakeGraphicsNode::initContent" << std::endl;
+
+    this->grContent = new QGraphicsProxyWidget(this);
+    this->grContent->setWidget(this->content);
+    this->content->setGeometry(this->edgePadding, this->titleHeight + this->edgePadding,
+                               this->width - 2 * this->edgePadding,
+                               this->height - 2 * this->edgePadding - this->titleHeight);
+    this->grContent->setFlag(QGraphicsItem::ItemIsSelectable, false);
+
+
+    auto sizeGrip = new QSizeGrip(this->content);
+    auto layout = new QHBoxLayout(this->content);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(sizeGrip, 0, Qt::AlignBottom | Qt::AlignRight);
+//    sizeGrip->setVisible(false);
 }
 
 void ZMakeGraphicsNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

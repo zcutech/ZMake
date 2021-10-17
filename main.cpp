@@ -6,7 +6,6 @@
 
 
 int main(int argc, char *argv[]) {
-    std::cout << "main app" << std::endl;
     QApplication app(argc, argv);
 //    QApplication::setStyle("Fusion");
     QApplication::setStyle("Windows");
