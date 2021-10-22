@@ -20,6 +20,8 @@ class ZMakeSubWindow : public NodeEditorWidget
 public:
     explicit ZMakeSubWindow(QApplication *app);
     ~ZMakeSubWindow() override = default;
+    // source directory path for current document(ZMake project)
+    QString srcPath;
     NodeClassProxy getNodeClsFromData(json& nodeData);
     void initNewNodeActions();
     QMenu* initNodesContextMenu();

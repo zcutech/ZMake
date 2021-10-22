@@ -32,7 +32,10 @@ public:
     void updateWindowMenu();
     void onWindowNodesToolbar();
     void createToolbar();
+    void createDirsDock();
+    void onSrcPathClicked();
     void createNodesDock();
+    void updateSrcDirs();
     void createStatusbar();
     QMdiSubWindow* createMdiChild(ZMakeSubWindow* childWidget=Q_NULLPTR);
     void onSubWindowClose(ZMakeSubWindow* widget, QCloseEvent* event);
@@ -47,6 +50,10 @@ private:
     QSignalMapper* windowMapper;
     QListWidget* nodesListWidget;
     QDockWidget* nodesDock;
+    QDockWidget* dirsDock;
+    QFileSystemModel* dirsModel;
+    QTreeView* dirsTree;
+    QLineEdit* dirLine;
     QIcon* emptyIcon;
 
     QMenu* windowMenu;

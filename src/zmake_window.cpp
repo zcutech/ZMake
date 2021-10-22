@@ -22,6 +22,10 @@ ZMakeWindow::ZMakeWindow(QApplication *app):
     windowMapper(Q_NULLPTR),
     nodesListWidget(Q_NULLPTR),
     nodesDock(Q_NULLPTR),
+    dirsDock(Q_NULLPTR),
+    dirsModel(Q_NULLPTR),
+    dirsTree(Q_NULLPTR),
+    dirLine(Q_NULLPTR),
     emptyIcon(Q_NULLPTR),
     windowMenu(Q_NULLPTR),
     actClose(Q_NULLPTR),
@@ -60,10 +64,12 @@ void ZMakeWindow::initUI() {
     }
 
     QObject::connect(this->mdiArea, &QMdiArea::subWindowActivated, this, &ZMakeWindow::updateMenus);
+    QObject::connect(this->mdiArea, &QMdiArea::subWindowActivated, this, &ZMakeWindow::updateSrcDirs);
     this->windowMapper = new QSignalMapper(this);
     QObject::connect(this->windowMapper, SIGNAL(QSignalMapper::mapped(QWidgets*)),
                      this, SLOT(ZMakeWindow::setActiveSubWindow(QWidgets*)));
 
+    this->createDirsDock();
     this->createNodesDock();
 
     this->createActions();
@@ -135,7 +141,9 @@ void ZMakeWindow::createActions()
 
 ZMakeSubWindow* ZMakeWindow::getCurrentNodeEditorWidget() const
 {
-    auto activeSubWindow = this->mdiArea->activeSubWindow();
+
+//    auto activeSubWindow = this->mdiArea->activeSubWindow();
+    auto activeSubWindow = this->mdiArea->currentSubWindow();
     if (activeSubWindow)
         return qobject_cast<ZMakeSubWindow *>(activeSubWindow->widget());
     return Q_NULLPTR;
@@ -283,6 +291,74 @@ void ZMakeWindow::createToolbar()
 
 }
 
+void ZMakeWindow::createDirsDock()
+{
+    auto sourcePath = QDir::homePath();
+
+    // create structure model for treeView
+    this->dirsModel = new QFileSystemModel();
+    this->dirsModel->setRootPath(sourcePath);
+    this->dirsModel->setFilter(QDir::AllDirs | QDir::AllEntries | QDir::NoDotAndDotDot);
+
+    // create treeView widget
+    this->dirsTree = new QTreeView();
+    this->dirsTree->setModel(this->dirsModel);
+    this->dirsTree->setRootIndex(this->dirsModel->index(sourcePath));
+    for (int i = 1; i < this->dirsModel->columnCount(); ++i)
+        this->dirsTree->hideColumn(i);
+    this->dirsTree->setAnimated(false);
+    this->dirsTree->setIndentation(20);
+    this->dirsTree->setSortingEnabled(true);
+    this->dirsTree->setWindowTitle("DirsTreeView");
+
+    // create treeView widget
+    this->dirLine = new QLineEdit(this);
+    this->dirLine->setFixedHeight(25);
+    this->dirLine->setReadOnly(true);
+    this->dirLine->setText(sourcePath);
+
+    // create selecting button widget
+    auto dirButton = new QPushButton("Source Path ...", this);
+    connect(dirButton, &QPushButton::clicked, this, &ZMakeWindow::onSrcPathClicked);
+
+    // create a layout to contain widgets above
+    auto box = new QGridLayout(this);
+    box->addWidget(this->dirLine, 0, 0);
+    box->addWidget(dirButton, 0, 1);
+    box->addWidget(this->dirsTree, 1, 0, -1, 2);
+
+    // create a dock widget
+    auto dockedWidget = new QWidget();
+    dockedWidget->setLayout(box);
+    auto dirsTreeDock = new QDockWidget("dirsTree");
+    dirsTreeDock->setWidget(dockedWidget);
+
+    this->addDockWidget(Qt::LeftDockWidgetArea, dirsTreeDock);
+}
+
+void ZMakeWindow::onSrcPathClicked()
+{
+    auto sourceDir = QFileDialog::getExistingDirectory(this, "Select Source Path");
+    if (sourceDir.isNull())
+        return;
+
+    this->dirsTree->setRootIndex(this->dirsModel->index(sourceDir));
+    this->dirLine->setText(sourceDir);
+
+    auto activeEditor = this->getCurrentNodeEditorWidget();
+    if (activeEditor)
+        activeEditor->srcPath = sourceDir;
+}
+
+void ZMakeWindow::updateSrcDirs()
+{
+    auto activeEditor = this->getCurrentNodeEditorWidget();
+    if (activeEditor) {
+        this->dirLine->setText(activeEditor->srcPath);
+        this->dirsTree->setRootIndex(this->dirsModel->index(activeEditor->srcPath));
+    }
+}
+
 void ZMakeWindow::createNodesDock()
 {
     this->nodesListWidget = new QDMDragListBox();
@@ -291,36 +367,6 @@ void ZMakeWindow::createNodesDock()
     this->nodesDock->setFloating(false);
 
     this->addDockWidget(Qt::RightDockWidgetArea, this->nodesDock);
-
-
-    auto model = new QFileSystemModel();
-    model->setRootPath(R"(E:\work_home\C++Project\Qt_proj\NodeTiler)");
-//    model->setRootPath(".");
-    model->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs | QDir::AllEntries);
-
-    auto tree = new QTreeView();
-    tree->setModel(model);
-    tree->setRootIndex(model->index(R"(E:\work_home\C++Project\Qt_proj\NodeTiler)"));
-    for (int i = 1; i < model->columnCount(); ++i)
-        tree->hideColumn(i);
-
-    tree->setAnimated(false);
-    tree->setIndentation(20);
-    tree->setSortingEnabled(true);
-//    const QSize availableSize = QApplication::desktop()->availableGeometry(&tree).size();
-//    tree.resize(availableSize / 2);
-    tree->setColumnWidth(0, tree->width() / 3);
-    tree->setWindowTitle(QObject::tr("Dir View"));
-    tree->show();
-
-    auto dirsTreeDock = new QDockWidget("dirsTree");
-    dirsTreeDock->setWidget(tree);
-    dirsTreeDock->setFloating(false);
-
-
-    this->addDockWidget(Qt::LeftDockWidgetArea, dirsTreeDock);
-
-
 }
 
 void ZMakeWindow::createStatusbar()

@@ -17,6 +17,7 @@
 
 ZMakeSubWindow::ZMakeSubWindow(QApplication *app):
     NodeEditorWidget(app),
+    srcPath(QDir::homePath()),
     nodeActions({})
 {
     this->setAttribute(Qt::WA_DeleteOnClose);
