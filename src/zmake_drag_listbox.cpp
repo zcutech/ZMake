@@ -24,11 +24,11 @@ void QDMDragListBox::addMyItems()
 {
     for (auto it : *(BaseFactory::ZNODES_PROXIES)) {
         auto nodeObj = it.second(Q_NULLPTR);
-        this->addMyItem(nodeObj->opTitle(), nodeObj->icon(), nodeObj->opCode());
+        this->addMyItem(nodeObj->opTitle(), nodeObj->icon(), nodeObj->nodeType());
     }
 }
 
-void QDMDragListBox::addMyItem(const QString& name, const QString& icon, Z_NODE_TYPE opCode)
+void QDMDragListBox::addMyItem(const QString& name, const QString& icon, Z_NODE_TYPE nodeType)
 {
     auto item = new QListWidgetItem(name, this);
     auto pixmap = new QPixmap(icon == "" ? "." : icon);
@@ -39,19 +39,19 @@ void QDMDragListBox::addMyItem(const QString& name, const QString& icon, Z_NODE_
 
     // set data
     item->setData(Qt::UserRole, *pixmap);
-    item->setData(Qt::UserRole + 1, opCode);
+    item->setData(Qt::UserRole + 1, nodeType);
 }
 
 void QDMDragListBox::startDrag(Qt::DropActions supportedActions)
 {
     auto item = this->currentItem();
-    auto opCode = item->data(Qt::UserRole + 1).toInt();
+    auto nodeType = item->data(Qt::UserRole + 1).toInt();
     auto pixmap = item->data(Qt::UserRole).value<QPixmap>();
 
     auto itemData = new QByteArray();
     auto dataStream = new QDataStream(itemData, QIODevice::WriteOnly);
     *dataStream << pixmap;
-    *dataStream << opCode;
+    *dataStream << nodeType;
     *dataStream << item->text();
 
     auto mimeData = new QMimeData();

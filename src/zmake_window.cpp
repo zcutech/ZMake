@@ -14,6 +14,7 @@
 #include "zmake_drag_listbox.h"
 #include "zmake_drag_dirsTree.h"
 #include "zmake_tree_model.h"
+#include "zmake_nodes.h"
 
 
 ZMakeWindow::ZMakeWindow(QApplication *app):
@@ -60,6 +61,7 @@ void ZMakeWindow::initUI() {
 
     this->emptyIcon = new QIcon(".");
 
+    registerAllNodes();
     std::cout << "Registered Nodes:" << std::endl;
     for (const auto& n : *BaseFactory::ZNODES_PROXIES) {
         std::cout << n.first << "\t" << n.second(Q_NULLPTR)->opTitle().toStdString() << std::endl;

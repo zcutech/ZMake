@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# ToDo: Make sure this PATH is set correctly or CMAKE_PREFIX_PATH was OK itself.
+# ToDo: Make sure this PATH is set correctly
 set(CMAKE_PREFIX_PATH "C:/Qt/install/path/like/Qt/5.9.8/mingw53_32")
 
 
@@ -20,15 +20,14 @@ find_package(Qt5 COMPONENTS
 include(NodeTiler.cmake)
 
 
-file(GLOB Sources ./src/*.cpp)
-file(GLOB Headers ./include/*.h)
+file(GLOB Sources ./src/*.cpp lib/QSourceHighlite/*.cpp)
+file(GLOB Headers ./include/*.h lib/QSourceHighlite/*.h)
 
 set(Sources ${Sources} ${NodeTiler_Sources})
 set(Headers ${Headers} ${NodeTiler_Headers})
 
 add_executable(${PROJECT_NAME} WIN32 main.cpp ${Sources} ${Headers})
-target_include_directories(ZMake PUBLIC "./include" ${NodeTiler_INCLUDE_DIR})
-
+target_include_directories(ZMake PUBLIC "./include" ${NodeTiler_INCLUDE_DIR} lib/QSourceHighlite)
 
 target_link_libraries(${PROJECT_NAME}
         Qt5::Core

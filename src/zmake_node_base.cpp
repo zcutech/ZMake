@@ -54,10 +54,16 @@ void ZMakeGraphicsNode::initContent()
                                this->height - 2 * this->edgePadding - this->titleHeight);
     this->grContent->setFlag(QGraphicsItem::ItemIsSelectable, false);
 
-
     auto sizeGrip = new QSizeGrip(this->content);
-    auto layout = new QHBoxLayout(this->content);
-    layout->setContentsMargins(0, 0, 0, 0);
+
+    QBoxLayout* layout;
+    if (this->content->layout) {
+        layout = this->content->layout;
+    }
+    else {
+        layout = new QHBoxLayout(this->content);
+        layout->setContentsMargins(0, 0, 0, 0);
+    }
     layout->addWidget(sizeGrip, 0, Qt::AlignBottom | Qt::AlignRight);
 //    sizeGrip->setVisible(false);
 }
@@ -103,12 +109,12 @@ ZMakeNodeContent* ZMakeNodeContent::init()
 // must call init method firstly after construction
 ZMakeNode::ZMakeNode(Scene *_scene, const std::string& _title,
                      std::vector<SOCKET_TYPE> inputs, std::vector<SOCKET_TYPE> outputs):
-    _icon(""),
-    _opCode(Z_NODE_TYPE(0)),
-    _opTitle(QString::fromStdString(_title)),
-    _contentLabel(""),
-    _contentLabel_ObjName("ZMake_node_bg"),
-    Node(_scene, _title, std::move(inputs), std::move(outputs))
+        _icon(""),
+        _nodeType(Z_NODE_TYPE(0)),
+        _opTitle(QString::fromStdString(_title)),
+        _contentLabel(""),
+        _contentLabel_ObjName("ZMake_node_bg"),
+        Node(_scene, _title, std::move(inputs), std::move(outputs))
 {
 
 }
@@ -129,7 +135,7 @@ void ZMakeNode::initSettings()
 json ZMakeNode::serialize()
 {
     auto resSerial = Node::serialize();
-    resSerial["op_code"] = this->opCode();
+    resSerial["nodeType"] = this->nodeType();
 
     return resSerial;
 }

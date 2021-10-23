@@ -56,8 +56,8 @@ public:
     bool deserialize(json data, node_HashMap *hashMap, bool restoreId) override;
     const QString& icon() { return this->_icon; }
     void icon(const QString& s) { this->_icon = s; }
-    Z_NODE_TYPE opCode() { return this->_opCode; }
-    void opCode(Z_NODE_TYPE c) { this->_opCode = c; }
+    Z_NODE_TYPE nodeType() { return this->_nodeType; }
+    void nodeType(Z_NODE_TYPE t) { this->_nodeType = t; }
     const QString& opTitle() { return this->_opTitle; }
     void opTitle(const QString& t) { this->_opTitle = t; }
     const QString& contentLabel() { return this->_contentLabel; }
@@ -66,7 +66,7 @@ public:
     void contentLabel_ObjName(const QString& ln) { this->_contentLabel_ObjName = ln; }
 protected:
     QString _icon;
-    Z_NODE_TYPE _opCode;
+    Z_NODE_TYPE _nodeType;
     QString _opTitle;
     QString _contentLabel;
     QString _contentLabel_ObjName;

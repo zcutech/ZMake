@@ -16,7 +16,7 @@
 #include "zmake_node_base.h"
 
 
-ZNodeClassProxy getClassProxyByOpCode(Z_NODE_TYPE opCode);
+ZNodeClassProxy getClassProxyByNodeType(Z_NODE_TYPE nodeType);
 
 
 class ZConfException : public std::exception
@@ -41,12 +41,12 @@ private:
     std::string message;
 };
 
-class OpCodeNotRegistered : public ZConfException
+class nodeTypeNotRegistered : public ZConfException
 {
 public:
-    OpCodeNotRegistered(): message("Error.") {}
-    explicit OpCodeNotRegistered(const std::string& str): message("Error : " + str) {}
-    ~OpCodeNotRegistered() noexcept override = default;
+    nodeTypeNotRegistered(): message("Error.") {}
+    explicit nodeTypeNotRegistered(const std::string& str): message("Error : " + str) {}
+    ~nodeTypeNotRegistered() noexcept override = default;
     const char* what() const noexcept override { return message.c_str(); }
 private:
     std::string message;

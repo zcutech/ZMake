@@ -19,7 +19,7 @@ public:
     ~QDMDragListBox() override = default;
     void initUI();
     void addMyItems();
-    void addMyItem(const QString& name, const QString& icon = "", Z_NODE_TYPE opCode = Z_NODE_TYPE(0));
+    void addMyItem(const QString& name, const QString& icon="", Z_NODE_TYPE nodeType=Z_NODE_TYPE(0));
     void startDrag(Qt::DropActions supportedActions) override;
 };
 

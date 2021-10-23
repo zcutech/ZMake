@@ -18,12 +18,9 @@ bool hasAnyProperty(const QMimeData* mime);
 extern std::map<const char*, QString> Z_MIME_MAP;
 
 enum Z_NODE_TYPE {
-    OP_NODE_INPUT = 1,
-    OP_NODE_OUTPUT = 2,
-    OP_NODE_ADD = 3,
-    OP_NODE_SUB = 4,
-    OP_NODE_MUL = 5,
-    OP_NODE_DIV = 6,
+    TYPE_NODE_VARS = 1,
+    TYPE_NODE_RULE = 2,
+    TYPE_NODE_FILE = 3,
 };
 
 #endif //ZMAKE_ZMAKE_DEFINITIONS_H

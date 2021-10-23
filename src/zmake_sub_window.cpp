@@ -13,6 +13,7 @@
 #include <node_scene_history.h>
 
 #include "zmake_conf.h"
+#include "znode_file.h"
 
 
 ZMakeSubWindow::ZMakeSubWindow(QApplication *app):
@@ -35,8 +36,8 @@ ZMakeSubWindow::ZMakeSubWindow(QApplication *app):
 NodeClassProxy ZMakeSubWindow::getNodeClsFromData(json& nodeData)
 {
     // for code consistency, don't call init here
-    if (nodeData.contains("op_code")) {
-        auto nodeProxy = getClassProxyByOpCode(Z_NODE_TYPE(nodeData["op_code"]));
+    if (nodeData.contains("nodeType")) {
+        auto nodeProxy = getClassProxyByNodeType(Z_NODE_TYPE(nodeData["nodeType"]));
 //        return [nodeProxy](Scene* s) { return nodeProxy(s)->init(); };
         return [nodeProxy](Scene* s) { return nodeProxy(s); };
     }
@@ -48,9 +49,9 @@ void ZMakeSubWindow::initNewNodeActions()
 {
     for (const auto &p : *(BaseFactory::ZNODES_PROXIES)) {
         auto nodeObj = p.second(Q_NULLPTR);
-        this->nodeActions[nodeObj->opCode()] = new QAction(
+        this->nodeActions[nodeObj->nodeType()] = new QAction(
                 QIcon(nodeObj->icon()), nodeObj->opTitle());
-        this->nodeActions[nodeObj->opCode()]->setData(nodeObj->opCode());
+        this->nodeActions[nodeObj->nodeType()]->setData(nodeObj->nodeType());
     }
 }
 
@@ -96,14 +97,18 @@ void ZMakeSubWindow::onDrop(QDropEvent *event)
         auto dataStream = new QDataStream(&eventData, QIODevice::ReadOnly);
         auto pixmap = new QPixmap();
         *dataStream >> *pixmap;
-        quint32 opCode = 0;
-        *dataStream >> opCode;
+        quint32 nodeType = 0;
+        *dataStream >> nodeType;
 
         auto mousePos = event->pos();
         auto scenePos = this->scene->getView()->mapToScene(mousePos);
 
-        auto nodeProxy = getClassProxyByOpCode(Z_NODE_TYPE(opCode));
+        auto nodeProxy = getClassProxyByNodeType(Z_NODE_TYPE(nodeType));
         auto node = dynamic_cast<ZMakeNode*>(nodeProxy(this->scene)->init());
+        if (nodeType == TYPE_NODE_FILE) {
+
+        }
+
         node->setPos(scenePos - QPointF(20, 20));       // position offset from mouse cursor
         this->scene->history->storeHistory(QString::fromStdString("Create Node " + node->toString()),
                                            VIEW_HIST::CREATE_ITEMS);
@@ -113,11 +118,21 @@ void ZMakeSubWindow::onDrop(QDropEvent *event)
         auto eventData = event->mimeData()->data(Z_MIME_MAP[DATA_DIRS_FILE]);
         auto dataStream = new QDataStream(&eventData, QIODevice::ReadOnly);
 
-        char* str;
+        char* fileName;
         uint len;
-        dataStream->readBytes(str, len);
-        std::cout << "ZMakeSubWindow::onDrop - 4 " << str << std::endl;
+        dataStream->readBytes(fileName, len);
+//        std::cout << "ZMakeSubWindow::onDrop - 4 " << fileName << std::endl;
 
+        auto node = new ZNodeFile(this->scene);
+        node->fileName(fileName);
+        node->init();
+
+        auto mousePos = event->pos();
+        auto scenePos = this->scene->getView()->mapToScene(mousePos);
+
+        node->setPos(scenePos - QPointF(20, 20));       // position offset from mouse cursor
+        this->scene->history->storeHistory(QString::fromStdString("Create Node " + node->toString()),
+                                           VIEW_HIST::CREATE_ITEMS);
         event->setDropAction(Qt::MoveAction);
         event->accept();
     } else {
@@ -199,7 +214,7 @@ void ZMakeSubWindow::handleNewNodeContextMenu(QContextMenuEvent *event)
     auto action = contextMenu->exec(this->mapToGlobal(event->pos()));
 
     if (action) {
-        auto nodeCls = getClassProxyByOpCode(Z_NODE_TYPE(action->data().toInt()));
+        auto nodeCls = getClassProxyByNodeType(Z_NODE_TYPE(action->data().toInt()));
         auto newZMakeNode = dynamic_cast<ZMakeNode*>((nodeCls(this->scene))->init());
         newZMakeNode->setPos(this->scene->getView()->mapToScene(event->pos()));
         std::cout << "Selected node: " << *newZMakeNode << std::endl;
