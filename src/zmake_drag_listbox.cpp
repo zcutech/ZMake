@@ -55,7 +55,8 @@ void QDMDragListBox::startDrag(Qt::DropActions supportedActions)
     *dataStream << item->text();
 
     auto mimeData = new QMimeData();
-    mimeData->setData(Z_MIME_MAP[LISTBOX_MIMETYPE], *itemData);
+    mimeData->setData(Z_MIME_MAP[DATA_LIST_NODE], *itemData);
+    mimeData->setProperty(DATA_LIST_NODE, QVariant(DATA_LIST_NODE));
 
     auto drag = new QDrag(this);
     drag->setMimeData(mimeData);

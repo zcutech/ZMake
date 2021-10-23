@@ -10,6 +10,9 @@
 #include "zmake_sub_window.h"
 
 
+class ZMakeDirsTree;
+class ZMakeTreeModel;
+
 class ZMakeWindow : public NodeEditorWindow
 {
     Q_OBJECT
@@ -51,8 +54,8 @@ private:
     QListWidget* nodesListWidget;
     QDockWidget* nodesDock;
     QDockWidget* dirsDock;
-    QFileSystemModel* dirsModel;
-    QTreeView* dirsTree;
+    ZMakeTreeModel* dirsModel;
+    ZMakeDirsTree* dirsTree;
     QLineEdit* dirLine;
     QIcon* emptyIcon;
 

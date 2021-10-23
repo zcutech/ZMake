@@ -12,6 +12,8 @@
 
 #include "zmake_sub_window.h"
 #include "zmake_drag_listbox.h"
+#include "zmake_drag_dirsTree.h"
+#include "zmake_tree_model.h"
 
 
 ZMakeWindow::ZMakeWindow(QApplication *app):
@@ -296,12 +298,12 @@ void ZMakeWindow::createDirsDock()
     auto sourcePath = QDir::homePath();
 
     // create structure model for treeView
-    this->dirsModel = new QFileSystemModel();
+    this->dirsModel = new ZMakeTreeModel(this);
     this->dirsModel->setRootPath(sourcePath);
     this->dirsModel->setFilter(QDir::AllDirs | QDir::AllEntries | QDir::NoDotAndDotDot);
 
     // create treeView widget
-    this->dirsTree = new QTreeView();
+    this->dirsTree = new ZMakeDirsTree(this->dirsModel, this);
     this->dirsTree->setModel(this->dirsModel);
     this->dirsTree->setRootIndex(this->dirsModel->index(sourcePath));
     for (int i = 1; i < this->dirsModel->columnCount(); ++i)
@@ -316,9 +318,11 @@ void ZMakeWindow::createDirsDock()
     this->dirLine->setFixedHeight(25);
     this->dirLine->setReadOnly(true);
     this->dirLine->setText(sourcePath);
+    this->dirLine->setToolTip(sourcePath);
 
     // create selecting button widget
-    auto dirButton = new QPushButton("Source Path ...", this);
+    auto dirButton = new QPushButton("Source ...", this);
+    dirButton->setToolTip("Selecting Source Path");
     connect(dirButton, &QPushButton::clicked, this, &ZMakeWindow::onSrcPathClicked);
 
     // create a layout to contain widgets above
@@ -338,14 +342,18 @@ void ZMakeWindow::createDirsDock()
 
 void ZMakeWindow::onSrcPathClicked()
 {
-    auto sourceDir = QFileDialog::getExistingDirectory(this, "Select Source Path");
+    auto activeEditor = this->getCurrentNodeEditorWidget();
+    auto defaultDir = activeEditor ? activeEditor->srcPath : QDir::homePath();
+
+    auto sourceDir = QFileDialog::getExistingDirectory(this, "Select Source Path", defaultDir);
     if (sourceDir.isNull())
         return;
 
+    this->dirsModel->setRootPath(sourceDir);
     this->dirsTree->setRootIndex(this->dirsModel->index(sourceDir));
     this->dirLine->setText(sourceDir);
+    this->dirLine->setToolTip(sourceDir );
 
-    auto activeEditor = this->getCurrentNodeEditorWidget();
     if (activeEditor)
         activeEditor->srcPath = sourceDir;
 }

@@ -82,7 +82,7 @@ void ZMakeSubWindow::closeEvent(QCloseEvent *event)
 
 void ZMakeSubWindow::onDragEnter(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat(Z_MIME_MAP[LISTBOX_MIMETYPE]))
+    if (hasAnyProperty(event->mimeData()))
         event->acceptProposedAction();
     else
         event->setAccepted(false);
@@ -90,19 +90,18 @@ void ZMakeSubWindow::onDragEnter(QDragEnterEvent *event)
 
 void ZMakeSubWindow::onDrop(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat(Z_MIME_MAP[LISTBOX_MIMETYPE])) {
-        auto eventData = event->mimeData()->data(Z_MIME_MAP[LISTBOX_MIMETYPE]);
+    if (event->mimeData()->property(DATA_LIST_NODE).isValid()) {
+        std::cout << "ZMakeSubWindow::onDrop - 2" << std::endl;
+        auto eventData = event->mimeData()->data(Z_MIME_MAP[DATA_LIST_NODE]);
         auto dataStream = new QDataStream(&eventData, QIODevice::ReadOnly);
         auto pixmap = new QPixmap();
         *dataStream >> *pixmap;
         quint32 opCode = 0;
         *dataStream >> opCode;
-//        auto text = dataStream->readQString();
 
         auto mousePos = event->pos();
         auto scenePos = this->scene->getView()->mapToScene(mousePos);
 
-        //        std::cout << opCode << std::endl;
         auto nodeProxy = getClassProxyByOpCode(Z_NODE_TYPE(opCode));
         auto node = dynamic_cast<ZMakeNode*>(nodeProxy(this->scene)->init());
         node->setPos(scenePos - QPointF(20, 20));       // position offset from mouse cursor
@@ -110,8 +109,18 @@ void ZMakeSubWindow::onDrop(QDropEvent *event)
                                            VIEW_HIST::CREATE_ITEMS);
         event->setDropAction(Qt::MoveAction);
         event->accept();
-    }
-    else {
+    } else if (event->mimeData()->property(DATA_DIRS_FILE).isValid()) {
+        auto eventData = event->mimeData()->data(Z_MIME_MAP[DATA_DIRS_FILE]);
+        auto dataStream = new QDataStream(&eventData, QIODevice::ReadOnly);
+
+        char* str;
+        uint len;
+        dataStream->readBytes(str, len);
+        std::cout << "ZMakeSubWindow::onDrop - 4 " << str << std::endl;
+
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    } else {
         event->ignore();
     }
 }

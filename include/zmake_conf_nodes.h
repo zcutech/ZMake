@@ -63,6 +63,7 @@ public:
     // must call init method firstly after construct
     explicit ZNodeVariablesContent(ZNodeVariables* node, QWidget* parent=Q_NULLPTR);
     ZNodeVariablesContent* init() override;
+    void resizeEvent(QResizeEvent *event) override;
     json serialize() override;
     bool deserialize(json data, node_HashMap *hashMap, bool restoreId) override;
 protected:

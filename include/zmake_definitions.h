@@ -6,14 +6,16 @@
 #define ZMAKE_ZMAKE_DEFINITIONS_H
 
 #include <map>
+
 #include <QString>
+#include <QMimeData>
 
+#define DATA_LIST_NODE "userData_listNode"
+#define DATA_DIRS_FILE "userData_dirsFile"
 
-enum Z_MIME_TYPE {
-    LISTBOX_MIMETYPE,
-};
+bool hasAnyProperty(const QMimeData* mime);
 
-extern std::map<Z_MIME_TYPE, QString> Z_MIME_MAP;
+extern std::map<const char*, QString> Z_MIME_MAP;
 
 enum Z_NODE_TYPE {
     OP_NODE_INPUT = 1,

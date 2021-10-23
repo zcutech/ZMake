@@ -78,9 +78,9 @@ void ZNodeVariables::initInnerClasses()
 }
 
 ZNodeVariablesContent::ZNodeVariablesContent(ZNodeVariables* node, QWidget* parent):
-        varsList(Q_NULLPTR),
-        QDMNodeContentWidget(node, parent),
-        node(dynamic_cast<ZNodeVariables*>(node))
+    varsList(Q_NULLPTR),
+    QDMNodeContentWidget(node, parent),
+    node(dynamic_cast<ZNodeVariables*>(node))
 {
 }
 
@@ -89,7 +89,7 @@ ZNodeVariablesContent* ZNodeVariablesContent::init()
     this->varsList = new QTableWidget(this);
     this->varsList->setObjectName(this->node->contentLabel_ObjName());
     this->varsList->setColumnCount(3);
-    this->varsList->setRowCount(10);
+    this->varsList->setRowCount(8);
     auto tblHeaders = new QStringList();
     *tblHeaders << "Name" << "Value" << "Description";
     this->varsList->setHorizontalHeaderLabels(*tblHeaders);
@@ -97,6 +97,13 @@ ZNodeVariablesContent* ZNodeVariablesContent::init()
     this->varsList->show();
 
     return this;
+}
+
+void ZNodeVariablesContent::resizeEvent(QResizeEvent *event)
+{
+    QDMNodeContentWidget::resizeEvent(event);
+    this->varsList->setGeometry(this->varsList->x(), this->varsList->y(), this->width(), this->height());
+
 }
 
 json ZNodeVariablesContent::serialize()
