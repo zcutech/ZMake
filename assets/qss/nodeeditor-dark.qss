@@ -1,7 +1,7 @@
 QFrame, QDialog, QMainWindow {background: #474747;}
 QSplitter, QMainWindow::separator {background: #474747;}
 QStatusBar {background: #474747; color: "#ccc";}
-QTabWidget {border: 0;}
+/* QTabWidget {border: 0;} */
 QTabBar {background: #474747; color: "#ccc";}
 QMdiArea QTabBar, QMdiArea QTabWidget, QMdiArea QTabWidget::pane, QMdiArea QTabWidget::tab-bar, QMdiArea QTabBar::tab{height:17px;}
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,QMdiArea QTabBar::tab:top:!selected:hover {border-top-left-radius:4px;border-top-right-radius:4px;padding:2px 8px;padding-top:0;padding-bottom:3px;min-width:8ex;border:1px solid "#333"; border-bottom:0;}
@@ -30,4 +30,5 @@ QListView::item::active:hover{color: #fff;}
 QListView::item:selected, QListView::item::active:selected {color: "#fff"; background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #4f9eee,stop : 1 #2084ea); border: 0;}
 QPushButton{color: #e6e6e6;background: #555;border-color: #141414}QLabel{color: #e6e6e6;}
 QLineEdit,QTextEdit{color: #e6e6e6;background: #5a5a5a}QLineEdit{border:1px solid #3a3a3a;border-radius:2px;padding:1px 2px}QDMNodeContentWidget{background:transparent;}
-QDMNodeContentWidget QFrame{background:transparent}QDMNodeContentWidget QTextEdit{background: #666}QDMNodeContentWidget QLabel{color: #e0e0e0}QGraphicsView{selection-background-color: #fff}
+/* QDMNodeContentWidget QFrame{background:transparent}QDMNodeContentWidget QTextEdit{background: #666}QDMNodeContentWidget QLabel{color: #e0e0e0}QGraphicsView{selection-background-color: #fff} */
+QFrame{background:transparent} QTextEdit{background: #666} QLabel{color: #e0e0e0} QGraphicsView{selection-background-color: #fff}
